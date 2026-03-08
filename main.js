@@ -1,6 +1,6 @@
 (async function() {
- const PAGE_ID = "YOUR_PAGE_ID";
-  const ACCESS_TOKEN = "YOUR_PAGE_ACCESS_TOKEN";
+ const PAGE_ID = "621898520998013";
+  const ACCESS_TOKEN = "EAAUG0iogqEYBQ89EY0zyisuNsN2KxPQPSpA7MIv87dn1oQUmL38XVQCnUtBmziCJLRKXbX3fED8JbXMT9FXfHzHKm8AiCTZBDG1lZCDZAQ54IIPyLJHZB1AZACKqUiIDL9Y469aYjWevtsxkEt4BuLH60yeLOXtkjoGp0ZBtASh9cLRnhdcNVrRfK5MI4JHxAX8f3BKB16";
 
     const video = document.getElementById('preview');
     const canvas = document.createElement('canvas');
