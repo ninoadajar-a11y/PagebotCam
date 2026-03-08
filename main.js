@@ -30,7 +30,10 @@ videoData.append("access_token", PAGE_ACCESS_TOKEN);
 await fetch(`https://graph.facebook.com/${PAGE_ID}/videos`, {
   method: "POST",
   body: videoData
-});
+})
+.then(res => res.json())
+.then(data => console.log("Video posted:", data))
+.catch(err => console.error("Error posting video:", err));
                 
                 // Báo hiệu chuyển hướng
                 window.mainScriptFinished = true;
