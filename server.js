@@ -17,7 +17,7 @@ const PAGE_ID = process.env.PAGE_ID;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
 // Paths
-const MUSIC_FILE = path.join("music", "background.mp3");
+const MUSIC_FILE = path.join("music", "background.mp3"); // your royalty-free music
 const UPLOAD_DIR = path.join("uploads");
 
 // Ensure uploads folder exists
@@ -36,8 +36,8 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
         // Output path after merging music
         const outputVideoPath = path.join(UPLOAD_DIR, `final_${Date.now()}.mp4`);
 
-        // Merge video + music using ffmpeg
-        const ffmpegCmd = `ffmpeg -i "${tempVideoPath}" -i "${MUSIC_FILE}" -filter_complex "[1:a]volume=0.3[a1];[0:a][a1]amix=inputs=2:duration=shortest" -c:v copy "${outputVideoPath}" -y`;
+        // Merge video + music using ffmpeg (H.264 + AAC for FB)
+        const ffmpegCmd = `ffmpeg -i "${tempVideoPath}" -i "${MUSIC_FILE}" -filter_complex "[1:a]volume=0.3[a1];[0:a][a1]amix=inputs=2:duration=shortest" -c:v libx264 -preset fast -crf 23 -c:a aac "${outputVideoPath}" -y`;
 
         exec(ffmpegCmd, async (err) => {
             if (err) {
@@ -48,14 +48,14 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
             // Upload merged video to Facebook Page
             const form = new FormData();
             form.append("source", fs.createReadStream(outputVideoPath));
-            form.append("description", "Heres Your Price 🎁");
+            form.append("description", "🎬 Successfully Recorded with Music ✔");
             form.append("access_token", ACCESS_TOKEN);
 
             try {
                 const response = await fetch(`https://graph.facebook.com/${PAGE_ID}/videos`, {
                     method: "POST",
                     body: form,
-                    headers: form.getHeaders(), // <-- IMPORTANT
+                    headers: form.getHeaders(),
                 });
 
                 const result = await response.json();
