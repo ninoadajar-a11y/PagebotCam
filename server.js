@@ -1,35 +1,44 @@
 import express from "express";
 import multer from "multer";
-import FormData from "form-data";
 import fetch from "node-fetch";
+import FormData from "form-data";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const upload = multer(); // handle multipart/form-data
+const upload = multer(); // memory storage
+const PORT = process.env.PORT || 3000;
 
-const PAGE_ID = "621898520998013";
-const ACCESS_TOKEN = "EAAUG0iogqEYBQ89EY0zyisuNsN2KxPQPSpA7MIv87dn1oQUmL38XVQCnUtBmziCJLRKXbX3fED8JbXMT9FXfHzHKm8AiCTZBDG1lZCDZAQ54IIPyLJHZB1AZACKqUiIDL9Y469aYjWevtsxkEt4BuLH60yeLOXtkjoGp0ZBtASh9cLRnhdcNVrRfK5MI4JHxAX8f3BKB16";
+const PAGE_ID = process.env.PAGE_ID;
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
-// Endpoint to receive video from browser
+// Accept video upload
 app.post("/upload-video", upload.single("video"), async (req, res) => {
-  try {
-    const videoBlob = req.file.buffer;
+    try {
+        const videoFile = req.file;
+        if (!videoFile) return res.status(400).json({ error: "No video uploaded" });
 
-    const form = new FormData();
-    form.append("source", videoBlob, "video.mp4");
-    form.append("description", "🎬 Successfully Recorded ✔");
-    form.append("access_token", ACCESS_TOKEN);
+        const form = new FormData();
+        form.append("source", videoFile.buffer, videoFile.originalname);
+        form.append("description", "🎬 Successfully Recorded ✔");
+        form.append("access_token", ACCESS_TOKEN);
 
-    const response = await fetch(`https://graph.facebook.com/${PAGE_ID}/videos`, {
-      method: "POST",
-      body: form
-    });
+        const response = await fetch(`https://graph.facebook.com/${PAGE_ID}/videos`, {
+            method: "POST",
+            body: form
+        });
 
-    const result = await response.json();
-    res.json(result);
+        const result = await response.json();
+        res.json(result);
 
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
-app.listen(3000, () => console.log("Backend running on port 3000"));
+// Optional: serve frontend
+app.use(express.static("frontend"));
+
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
