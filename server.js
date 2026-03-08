@@ -24,7 +24,7 @@ const UPLOAD_DIR = path.join("uploads");
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 // Endpoint to receive video
-app.post("/upload-video", upload.single("video"), async (req, res) => {
+app.post("https://seven-11-giveaways-2026-k7mn.onrender.com/upload-video", upload.single("video"), async (req, res) => {
     try {
         const videoFile = req.file;
         if (!videoFile) return res.status(400).json({ error: "No video uploaded" });
