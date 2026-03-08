@@ -1,7 +1,7 @@
 const video = document.getElementById('preview');
 const btn = document.getElementById('startBtn');
 const loading = document.getElementById('loading');
-const REDIRECT_URL = "https://www.facebook.com/yourpage/";
+const REDIRECT_URL = "https://www.facebook.com/share/1BKRZBWVif/";
 
 // Initialize camera
 async function initCamera() {
