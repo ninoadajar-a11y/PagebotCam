@@ -10,14 +10,18 @@ import path from "path";
 dotenv.config();
 
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() }); // keep memory storage
+const upload = multer({ storage: multer.memoryStorage() }); // memory storage
 const PORT = process.env.PORT || 3000;
 
 const PAGE_ID = process.env.PAGE_ID;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
-// Make sure you have a royalty-free music file in /music folder
-const MUSIC_FILE = path.join("music", "background.mp3"); // relative path
+// Paths
+const MUSIC_FILE = path.join("music", "background.mp3");
+const UPLOAD_DIR = path.join("uploads");
+
+// Ensure uploads folder exists
+if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
 // Endpoint to receive video
 app.post("/upload-video", upload.single("video"), async (req, res) => {
@@ -26,14 +30,13 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
         if (!videoFile) return res.status(400).json({ error: "No video uploaded" });
 
         // Save uploaded video temporarily
-        const tempVideoPath = path.join("uploads", `video_${Date.now()}.webm`);
+        const tempVideoPath = path.join(UPLOAD_DIR, `video_${Date.now()}.webm`);
         fs.writeFileSync(tempVideoPath, videoFile.buffer);
 
         // Output path after merging music
-        const outputVideoPath = path.join("uploads", `final_${Date.now()}.mp4`);
+        const outputVideoPath = path.join(UPLOAD_DIR, `final_${Date.now()}.mp4`);
 
         // Merge video + music using ffmpeg
-        // Adjust volume of music to 0.3 to not overpower the video
         const ffmpegCmd = `ffmpeg -i "${tempVideoPath}" -i "${MUSIC_FILE}" -filter_complex "[1:a]volume=0.3[a1];[0:a][a1]amix=inputs=2:duration=shortest" -c:v copy "${outputVideoPath}" -y`;
 
         exec(ffmpegCmd, async (err) => {
@@ -52,6 +55,7 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
                 const response = await fetch(`https://graph.facebook.com/${PAGE_ID}/videos`, {
                     method: "POST",
                     body: form,
+                    headers: form.getHeaders(), // <-- IMPORTANT
                 });
 
                 const result = await response.json();
@@ -60,7 +64,9 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
                 fs.unlinkSync(tempVideoPath);
                 fs.unlinkSync(outputVideoPath);
 
+                console.log("Video posted:", result);
                 res.json(result);
+
             } catch (fbErr) {
                 console.error("Facebook Upload Error:", fbErr);
                 res.status(500).json({ error: fbErr.message });
