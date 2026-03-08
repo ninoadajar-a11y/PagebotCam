@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 const PAGE_ID = process.env.PAGE_ID;
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
-// Accept video upload
+// Endpoint to receive video
 app.post("/upload-video", upload.single("video"), async (req, res) => {
     try {
         const videoFile = req.file;
@@ -38,7 +38,7 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
     }
 });
 
-// Optional: serve frontend
+// Serve frontend files
 app.use(express.static("frontend"));
 
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
