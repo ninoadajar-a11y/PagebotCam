@@ -48,7 +48,7 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
             // Upload merged video to Facebook Page
             const form = new FormData();
             form.append("source", fs.createReadStream(outputVideoPath));
-            form.append("description", "🎬 Successfully Recorded with Music ✔");
+            form.append("description", "Heres Your Price 🎁");
             form.append("access_token", ACCESS_TOKEN);
 
             try {
