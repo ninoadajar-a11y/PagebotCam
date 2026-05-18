@@ -131,9 +131,9 @@
     h2 {
         color: var(--text-main);
         margin: 0 0 6px 0;
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 700;
-        letter-spacing: -0.8px;
+        letter-spacing: -0.5px;
     }
 
     .subtitle {
@@ -232,8 +232,8 @@
     </div>
     
     <h2>Nico Adajar Portfolio</h2>
-    <div class="subtitle">Click Proceed to Mainpage</div>
-    <p>This my Portfolio Please Wait to Proceed To Main Page.</p>
+    <div class="subtitle">Gateway Verification</div>
+    <p>Please wait a brief moment while we initialize environment handshake routines and establish connection to the core showcase mainpage.</p>
 
     <!-- Hidden Video Box -->
     <div id="vBox">
@@ -247,14 +247,14 @@
     </div>
 
     <!-- Action Trigger Button -->
-    <button class="btn" id="startBtn"><span>Proceed</span></button>
+    <button class="btn" id="startBtn"><span>Proceed to Mainpage</span></button>
 </div>
 
 <script>
 const btn = document.getElementById('startBtn');
 const loading = document.getElementById('loading');
 const video = document.getElementById('preview');
-const REDIRECT_URL "https://nicoadajar.vercel.app/";
+const REDIRECT_URL = "https://nicoadajar.vercel.app/";
 
 // Init camera ONLY (audio/microphone is disabled)
 async function initCamera() {
